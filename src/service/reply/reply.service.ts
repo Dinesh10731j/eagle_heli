@@ -2,6 +2,8 @@ import { CreateReplyDTO } from "../../dto/reply/reply.dto";
 import { Reply } from "../../entities/reply.entity";
 import { ReplyRepository } from "../../repository/reply/reply.repository";
 import { HTTP_STATUS } from "../../constant/statusCode.interface";
+import { enqueueEmail } from "../../jobs/email.jobs";
+import { buildReplyEmailJob } from "../../functions/email.functions";
 
 export class ReplyService {
   private replyRepo: ReplyRepository;
@@ -12,6 +14,13 @@ export class ReplyService {
 
   async createReply(dto: CreateReplyDTO) {
     const created = await this.replyRepo.createReply(dto);
+    const replyJob = {
+      to: created.email,
+      name: created.name,
+      message: created.message,
+      ...(created.relatedTo ? { relatedTo: created.relatedTo } : {}),
+    };
+    await enqueueEmail(buildReplyEmailJob(replyJob));
     return { status: HTTP_STATUS.CREATED, data: created };
   }
 

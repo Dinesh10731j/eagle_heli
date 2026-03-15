@@ -32,3 +32,43 @@ export const buildResetPasswordEmailJob = (data: {
   },
   templateType: "reset_password",
 });
+
+export const buildReplyEmailJob = (data: {
+  to: string;
+  name: string;
+  message: string;
+  relatedTo?: string;
+}): EmailJobData => ({
+  to: data.to,
+  subject: "Eagle Heli Support Reply",
+  templateData: {
+    name: data.name,
+    message: data.message,
+    ...(data.relatedTo ? { relatedTo: data.relatedTo } : {}),
+  },
+  templateType: "reply",
+});
+
+export const buildNewsLetterSubscribeJob = (data: { to: string }): EmailJobData => ({
+  to: data.to,
+  subject: "Welcome to Eagle Heli Newsletter",
+  templateData: {
+    email: data.to,
+  },
+  templateType: "newsletter_subscribe",
+});
+
+export const buildNewsLetterBroadcastJob = (data: {
+  to: string;
+  subject: string;
+  content: string;
+  title?: string;
+}): EmailJobData => ({
+  to: data.to,
+  subject: data.subject,
+  templateData: {
+    content: data.content,
+    ...(data.title ? { title: data.title } : {}),
+  },
+  templateType: "newsletter_broadcast",
+});
