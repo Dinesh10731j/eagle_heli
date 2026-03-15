@@ -34,6 +34,7 @@ export const envConfig = {
   CLOUDINARY_CLOUD_NAME: cleanEnv(process.env.CLOUDINARY_CLOUD_NAME),
   CLOUDINARY_API_KEY: cleanEnv(process.env.CLOUDINARY_API_KEY),
   CLOUDINARY_API_SECRET: cleanEnv(process.env.CLOUDINARY_API_SECRET),
+  FRONTEND_URL: cleanEnv(process.env.FRONTEND_URL),
 };
 
 

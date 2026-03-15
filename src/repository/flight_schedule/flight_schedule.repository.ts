@@ -42,7 +42,8 @@ export class FlightScheduleRepository {
   }
 
   // Delete schedule
-  async deleteSchedule(id: number): Promise<void> {
-    await this.repo.delete(id);
+  async deleteSchedule(id: number): Promise<boolean> {
+    const result = await this.repo.delete(id);
+    return result.affected ? result.affected > 0 : false;
   }
 }

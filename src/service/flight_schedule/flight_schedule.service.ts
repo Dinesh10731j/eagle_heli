@@ -2,6 +2,7 @@
 import { FlightSchedule } from "../../entities/flightSchedule.entity";
 import { CreateFlightScheduleDTO } from "../../dto/flight_schedule/flight_schedule.dto";
 import { FlightScheduleRepository } from "../../repository/flight_schedule/flight_schedule.repository";
+import { HTTP_STATUS } from "../../constant/statusCode.interface";
 
 export class FlightScheduleService {
 
@@ -12,58 +13,35 @@ export class FlightScheduleService {
   }
 
   // Create schedule
-  async createSchedule(dto: CreateFlightScheduleDTO): Promise<FlightSchedule> {
-
+  async createSchedule(dto: CreateFlightScheduleDTO) {
     const schedule = await this.flightRepo.createFlightSchedule(dto);
-
-    if (!schedule) {
-      throw new Error("Failed to create flight schedule");
-    }
-
-    return schedule;
+    return { status: HTTP_STATUS.CREATED, data: schedule };
   }
 
   // Get all schedules
-  async getAllSchedules(): Promise<FlightSchedule[]> {
-    return await this.flightRepo.getAllSchedules();
+  async getAllSchedules() {
+    const data = await this.flightRepo.getAllSchedules();
+    return { status: HTTP_STATUS.OK, data };
   }
 
   // Get schedule by ID
-  async getScheduleById(id: number): Promise<FlightSchedule | null> {
-
-    const schedule = await this.flightRepo.getScheduleById(id);
-
-    if (!schedule) {
-      throw new Error("Flight schedule not found");
-    }
-
-    return schedule;
+  async getScheduleById(id: number) {
+    const data = await this.flightRepo.getScheduleById(id);
+    if (!data) return { status: HTTP_STATUS.NOT_FOUND };
+    return { status: HTTP_STATUS.OK, data };
   }
 
   // Update schedule
-  async updateSchedule(
-    id: number,
-    data: Partial<FlightSchedule>
-  ): Promise<FlightSchedule> {
-
+  async updateSchedule(id: number, data: Partial<FlightSchedule>) {
     const updated = await this.flightRepo.updateSchedule(id, data);
-
-    if (!updated) {
-      throw new Error("Failed to update schedule");
-    }
-
-    return updated;
+    if (!updated) return { status: HTTP_STATUS.NOT_FOUND };
+    return { status: HTTP_STATUS.OK, data: updated };
   }
 
   // Delete schedule
-  async deleteSchedule(id: number): Promise<void> {
-
-    const schedule = await this.flightRepo.getScheduleById(id);
-
-    if (!schedule) {
-      throw new Error("Flight schedule not found");
-    }
-
-    await this.flightRepo.deleteSchedule(id);
+  async deleteSchedule(id: number) {
+    const deleted = await this.flightRepo.deleteSchedule(id);
+    if (!deleted) return { status: HTTP_STATUS.NOT_FOUND };
+    return { status: HTTP_STATUS.OK };
   }
 }

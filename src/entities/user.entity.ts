@@ -11,9 +11,15 @@ export class User {
     @Column()
     name!: string;
 
-    @Column()
-    password!: string; 
+  @Column()
+  password!: string; 
 
-    @Column({ default: "user" })
-    role!: string;
+  @Column({ default: "user" })
+  role!: string;
+
+  @Column({ type: "varchar", nullable: true })
+  resetPasswordToken?: string | null;
+
+  @Column({ type: "timestamptz", nullable: true })
+  resetPasswordExpires?: Date | null;
 }

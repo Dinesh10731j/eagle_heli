@@ -1,4 +1,4 @@
-import { IsString, IsDateString, IsOptional, IsEmail } from "class-validator";
+import { IsString, IsDateString, IsOptional, IsEmail, IsIn } from "class-validator";
 import { CountryCodeValidation } from "../../decorator/country_code_validation";
 
 export class CreateBookingDTO {
@@ -29,4 +29,8 @@ export class CreateBookingDTO {
   @IsOptional()
   @IsDateString()
   bookedAt?: string; // optional booking timestamp
+
+  @IsOptional()
+  @IsIn(["confirmed", "pending", "cancelled"])
+  status?: "confirmed" | "pending" | "cancelled";
 }

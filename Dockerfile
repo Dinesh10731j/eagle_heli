@@ -1,24 +1,16 @@
-# Use official Node.js LTS image
-FROM node:20-alpine
-
-# Set working directory
+# Build stage
+FROM node:20-alpine AS build
 WORKDIR /app
-
-# Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Install dependencies
-RUN npm install --production
-
-# Copy source code
+RUN npm install
 COPY . .
-
-# Build TypeScript if needed (optional)
-# RUN npm run build
-
-# Expose port
-EXPOSE 5000
-
-# Start the app
 RUN npm run build
-CMD ["node", "dist/server.js"]
+
+# Runtime stage
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY --from=build /app/dist ./dist
+EXPOSE 7000
+CMD ["node", "dist/index.js"]

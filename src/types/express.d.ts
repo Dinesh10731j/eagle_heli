@@ -1,5 +1,5 @@
 // src/types/express.d.ts
-import { UserPayload } from "../../interfaces/user.interface"; 
+import { UserPayload } from "../dto/interface";
 
 declare global {
   namespace Express {
@@ -8,3 +8,5 @@ declare global {
     }
   }
 }
+
+export {};
