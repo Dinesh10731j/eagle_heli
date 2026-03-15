@@ -32,6 +32,8 @@ export const Message = {
   // Validation
   INVALID_REQUEST: "Invalid request data",
   MISSING_FIELDS: "Required fields are missing",
+  CAPTCHA_REQUIRED: "Captcha token is required",
+  CAPTCHA_FAILED: "Captcha verification failed",
 
   // Booking
   FLIGHT_BOOKing_SUCCESS: "Flight Booked Successfully",
