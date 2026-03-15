@@ -27,10 +27,19 @@ const getRedisConnection = (): ConnectionOptions => {
 };
 
 const transporter = nodemailer.createTransport({
-  service:"gmail",
   host: SMTP_HOST,
   port: Number(SMTP_PORT),
   secure: Number(SMTP_PORT) === 465,
+  pool: true,
+  maxConnections: 3,
+  maxMessages: 100,
+  connectionTimeout: 20_000,
+  greetingTimeout: 20_000,
+  socketTimeout: 30_000,
+  requireTLS: Number(SMTP_PORT) === 587,
+  tls: {
+    minVersion: "TLSv1.2",
+  },
   auth: {
     user: SMTP_USER,
     pass: SMTP_PASS,

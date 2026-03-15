@@ -31,6 +31,9 @@ export const envConfig = {
   SMTP_PORT: cleanEnv(process.env.SMTP_PORT),
   SMTP_USER: cleanEnv(process.env.SMTP_USER),
   SMTP_PASS: cleanPass(process.env.SMTP_PASS),
+  CLOUDINARY_CLOUD_NAME: cleanEnv(process.env.CLOUDINARY_CLOUD_NAME),
+  CLOUDINARY_API_KEY: cleanEnv(process.env.CLOUDINARY_API_KEY),
+  CLOUDINARY_API_SECRET: cleanEnv(process.env.CLOUDINARY_API_SECRET),
 };
 
 
