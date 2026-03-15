@@ -9,8 +9,20 @@ export interface UserPayload {
 export interface EmailJobData {
   to: string;
   subject: string;
-  templateData: BookingEmailTemplateData | ResetPasswordTemplateData;
-  templateType: "confirmed" | "pending" | "cancelled" | "reset_password";
+  templateData:
+    | BookingEmailTemplateData
+    | ResetPasswordTemplateData
+    | ReplyEmailTemplateData
+    | NewsLetterSubscribeTemplateData
+    | NewsLetterBroadcastTemplateData;
+  templateType:
+    | "confirmed"
+    | "pending"
+    | "cancelled"
+    | "reset_password"
+    | "reply"
+    | "newsletter_subscribe"
+    | "newsletter_broadcast";
 }
 
 export interface BookingEmailTemplateData {
@@ -24,4 +36,19 @@ export interface BookingEmailTemplateData {
 export interface ResetPasswordTemplateData {
   name: string;
   resetLink: string;
+}
+
+export interface ReplyEmailTemplateData {
+  name: string;
+  message: string;
+  relatedTo?: string;
+}
+
+export interface NewsLetterSubscribeTemplateData {
+  email: string;
+}
+
+export interface NewsLetterBroadcastTemplateData {
+  title?: string;
+  content: string;
 }

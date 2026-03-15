@@ -4,8 +4,18 @@ import { emailBookingTemplate } from "../mailtemplate/booking_confirm";
 import { bookingPendingTemplate } from "../mailtemplate/booking_pending";
 import { bookingCancelledTemplate } from "../mailtemplate/booking_cancelled";
 import { resetPasswordTemplate } from "../mailtemplate/reset_password";
+import { replyResponseTemplate } from "../mailtemplate/reply_response";
+import { newsLetterSubscribeTemplate } from "../mailtemplate/news_letter_subscribe";
+import { newsLetterBroadcastTemplate } from "../mailtemplate/news_letter_broadcast";
 import { envConfig } from "../configs/env.config";
-import { EmailJobData, BookingEmailTemplateData, ResetPasswordTemplateData } from "../dto/interface";
+import {
+  EmailJobData,
+  BookingEmailTemplateData,
+  ResetPasswordTemplateData,
+  ReplyEmailTemplateData,
+  NewsLetterSubscribeTemplateData,
+  NewsLetterBroadcastTemplateData,
+} from "../dto/interface";
 import { getRedisConnection } from "./bull_mq_configuration";
 import chalk from "chalk";
 
@@ -55,6 +65,22 @@ export const emailWorker = new Worker<EmailJobData>(
       html = resetPasswordTemplate({
         name: data.name,
         resetLink: data.resetLink,
+      });
+    } else if (templateType === "reply") {
+      const data = templateData as ReplyEmailTemplateData;
+      html = replyResponseTemplate({
+        name: data.name,
+        message: data.message,
+        ...(data.relatedTo ? { relatedTo: data.relatedTo } : {}),
+      });
+    } else if (templateType === "newsletter_subscribe") {
+      const data = templateData as NewsLetterSubscribeTemplateData;
+      html = newsLetterSubscribeTemplate({ email: data.email });
+    } else if (templateType === "newsletter_broadcast") {
+      const data = templateData as NewsLetterBroadcastTemplateData;
+      html = newsLetterBroadcastTemplate({
+        content: data.content,
+        ...(data.title ? { title: data.title } : {}),
       });
     } else {
       const data = templateData as BookingEmailTemplateData;

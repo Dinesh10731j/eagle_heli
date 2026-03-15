@@ -7,6 +7,7 @@ import { verifyCaptcha } from "../../middleware/captcha_verification";
 const router = Router();
 
 router.post("/create", verifyCaptcha, NewsLetterController.createSubscription);
+router.post("/send", VerifyToken.authenticate, CheckRole.isAdminOrSudoAdmin, NewsLetterController.sendNewsletter);
 router.get("/get-all", VerifyToken.authenticate, CheckRole.isAdminOrSudoAdmin, NewsLetterController.getAllSubscriptions);
 router.get("/:id", VerifyToken.authenticate, CheckRole.isAdminOrSudoAdmin, NewsLetterController.getSubscriptionById);
 router.delete("/delete/:id", VerifyToken.authenticate, CheckRole.isAdminOrSudoAdmin, NewsLetterController.deleteSubscription);
