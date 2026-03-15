@@ -20,8 +20,12 @@ console.log(
 );
 
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     console.log(chalk.green("Database connected"));
+    if (process.env.NODE_ENV !== "test" && process.env.RUN_MIGRATIONS !== "false") {
+      await AppDataSource.runMigrations();
+      console.log(chalk.green("Database migrations applied"));
+    }
 
     const server = createServer(app);
     initSocket(server);
