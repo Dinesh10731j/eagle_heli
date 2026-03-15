@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# Temporary files
+tmp/
+*.tmp
+
+# Redis/BullMQ persistence files (if any local)
+*.rdb
+*.aof
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# npm lock file (optional, but usually good to keep it)
+# package-lock.json

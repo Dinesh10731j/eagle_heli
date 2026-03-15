@@ -1,0 +1,46 @@
+{
+  "name": "eagle_heli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bullmq": "^5.71.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "cloudinary": "^2.9.0",
+    "cookie-parser": "^1.4.7",
+    "cookies": "^0.9.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.1",
+    "ioredis": "^5.10.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^8.0.2",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.3",
+    "typeorm": "^0.3.28"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cookies": "^0.9.2",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.5.0",
+    "@types/nodemailer": "^7.0.11",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
