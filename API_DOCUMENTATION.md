@@ -41,12 +41,14 @@ Team
 - `PUT /team/update/:id` (multipart optional image)
 - `DELETE /team/delete/:id`
 
-Contact / Inquiry / Reply / Newsletter
+Contact / 
 - `POST /contact/create`
 - `GET /contact/get-all`
 - `GET /contact/:id`
 - `PUT /contact/update/:id`
 - `DELETE /contact/delete/:id`
+
+Inquiry /
 
 - `POST /inquiry/create`
 - `GET /inquiry/get-all`
@@ -54,11 +56,16 @@ Contact / Inquiry / Reply / Newsletter
 - `PUT /inquiry/update/:id`
 - `DELETE /inquiry/delete/:id`
 
+
+ Reply /
+
 - `POST /reply/create`
 - `GET /reply/get-all`
 - `GET /reply/:id`
 - `PUT /reply/update/:id`
 - `DELETE /reply/delete/:id`
+
+ Newsletter /
 
 - `POST /news-letter/create`
 - `GET /news-letter/get-all`
