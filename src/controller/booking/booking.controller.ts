@@ -34,7 +34,6 @@ export class BookingController {
 
       return res.status(result.status).json({
         message: Message.FLIGHT_BOOKing_SUCCESS,
-        data: result.data,
       });
     } catch (err: any) {
       return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });

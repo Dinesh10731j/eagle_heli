@@ -1,5 +1,4 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
-
 export class CreateContactDTO {
   @IsString()
   @IsNotEmpty({ message: "Name is required" })
@@ -10,6 +9,7 @@ export class CreateContactDTO {
 
   @IsString()
   @IsOptional()
+
   phone?: string;
 
   @IsString()

@@ -23,7 +23,7 @@ export class ContactController {
         return res.status(result.status).json({ message: Message.INTERNAL_SERVER_ERROR });
       }
       await delCache("contact:all");
-      return res.status(result.status).json({ message: Message.CREATED, data: result.data });
+      return res.status(result.status).json({ message: Message.CREATED });
     } catch (err: any) {
       return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });
     }

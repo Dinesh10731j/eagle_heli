@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class CreatePackageDTO {
@@ -12,7 +12,9 @@ export class CreatePackageDTO {
 
   @IsNumber()
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) =>
+    typeof value === "string" ? Number(value.replace(/[^0-9.]/g, "")) : value
+  )
   price?: number;
 
   @IsNumber()
