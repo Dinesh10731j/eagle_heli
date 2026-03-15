@@ -19,4 +19,8 @@ export class AuthRepository {
   async findByEmail(email: string): Promise<User | null> {
     return this.repo.findOneBy({ email });
   }
+
+  async saveUser(user: User): Promise<User> {
+    return this.repo.save(user);
+  }
 }

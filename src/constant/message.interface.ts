@@ -2,6 +2,12 @@ export const Message = {
   // General
   INTERNAL_SERVER_ERROR: "Internal server error",
   SUCCESS: "Operation completed successfully",
+  CREATED: "Created successfully",
+  FETCHED: "Fetched successfully",
+  UPDATED: "Updated successfully",
+  DELETED: "Deleted successfully",
+  NOT_FOUND: "Not found",
+  HEALTH_OK: "ok",
 
   // User
   USER_ALREADY_EXISTS: "User already exists",
@@ -15,6 +21,13 @@ export const Message = {
   LOGIN_SUCCESS: "Login successful",
   UNAUTHORIZED: "Unauthorized access",
   FORBIDDEN: "Forbidden",
+  ACCESS_TOKEN_MISSING: "Token expired. Please login again",
+  INVALID_TOKEN_PAYLOAD: "Invalid token payload",
+  INVALID_OR_EXPIRED_TOKEN: "Invalid or expired token. Please login!",
+  FORBIDDEN_ROLE: "Forbidden: insufficient role",
+  RESET_EMAIL_SENT: "Password reset email sent",
+  RESET_TOKEN_INVALID: "Reset token is invalid or expired",
+  PASSWORD_RESET_SUCCESS: "Password reset successful",
 
   // Validation
   INVALID_REQUEST: "Invalid request data",

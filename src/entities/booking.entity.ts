@@ -33,4 +33,7 @@ export class FlightBooking {
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   bookedAt!: Date; // booking timestamp
+
+  @Column({ default: "confirmed" })
+  status!: "confirmed" | "pending" | "cancelled";
 }

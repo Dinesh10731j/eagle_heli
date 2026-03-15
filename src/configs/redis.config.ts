@@ -1,5 +1,6 @@
 import Redis, { Redis as RedisClient } from "ioredis";
 import { envConfig } from "./env.config";
+import chalk from "chalk";
 
 const { REDIS_URL } = envConfig;
 
@@ -17,11 +18,15 @@ export class RedisService {
     this.client = new Redis(url, { maxRetriesPerRequest: null });
 
     this.client.on("connect", () => {
-      console.log("Redis connected");
+      if (process.env.NODE_ENV !== "test" && !process.env.SKIP_REDIS) {
+        console.log(chalk.green("Redis connected"));
+      }
     });
 
     this.client.on("error", (err) => {
-      console.error("Redis connection error:", err);
+      if (process.env.NODE_ENV !== "test" && !process.env.SKIP_REDIS) {
+        console.error(chalk.red("Redis connection error:"), err);
+      }
     });
   }
 
@@ -71,4 +76,18 @@ export class RedisService {
 }
 
 // Export a singleton instance for app-wide use
-export const redisService = new RedisService(REDIS_URL);
+type RedisServiceLike = Pick<
+  RedisService,
+  "get" | "set" | "del" | "getRawClient" | "disconnect"
+>;
+
+const noopRedisService: RedisServiceLike = {
+  get: async () => null,
+  set: async () => "OK" as const,
+  del: async () => 0,
+  getRawClient: () => null as any,
+  disconnect: async () => {},
+};
+
+export const redisService: RedisServiceLike =
+  process.env.SKIP_REDIS === "true" ? noopRedisService : new RedisService(REDIS_URL);

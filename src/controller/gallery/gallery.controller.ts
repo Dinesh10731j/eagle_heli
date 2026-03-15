@@ -6,6 +6,9 @@ import { GalleryRepository } from "../../repository/gallery/gallery.repository";
 import { GalleryService } from "../../service/gallery/gallery.service";
 import { cloudinary } from "../../configs/cloudinary.config";
 import fs from "fs";
+import { getCache, setCache, delCache } from "../../utils/helpers/redis_helper";
+import { HTTP_STATUS } from "../../constant/statusCode.interface";
+import { Message } from "../../constant/message.interface";
 
 const galleryRepo = new GalleryRepository();
 const galleryService = new GalleryService(galleryRepo);
@@ -18,7 +21,7 @@ export class GalleryController {
       const errors = await validate(dto);
 
       if (errors.length > 0) {
-        return res.status(400).json(errors);
+        return res.status(HTTP_STATUS.BAD_REQUEST).json(errors);
       }
 
       const files = (req as any).files as
@@ -26,7 +29,7 @@ export class GalleryController {
         | undefined;
       const file = files?.image?.[0] || files?.file?.[0];
       if (!file?.path) {
-        return res.status(400).json({ message: "Image file is required" });
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: Message.INVALID_REQUEST });
       }
 
       const uploadResult = await cloudinary.uploader.upload(file.path, {
@@ -36,27 +39,45 @@ export class GalleryController {
 
       dto.image = uploadResult.secure_url;
 
-      const created = await galleryService.createGallery(dto);
+      const result = await galleryService.createGallery(dto);
+      if (result.status !== HTTP_STATUS.CREATED || !result.data) {
+        return res.status(result.status).json({ message: Message.INTERNAL_SERVER_ERROR });
+      }
+      await delCache("gallery:all");
 
-      return res.status(201).json({
-        message: "Gallery item created successfully",
-        data: created,
+      return res.status(result.status).json({
+        message: Message.CREATED,
+        data: result.data,
       });
     } catch (err: any) {
-      return res.status(500).json({ message: err.message });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });
     }
   }
 
   // Get all gallery items
   static async getAllGallery(req: Request, res: Response) {
     try {
-      const items = await galleryService.getAllGallery();
-      return res.status(200).json({
-        message: "Gallery fetched successfully",
-        data: items,
+      const cached = await getCache<any[]>("gallery:all");
+      if (cached.cached && cached.data) {
+        return res.status(HTTP_STATUS.OK).json({
+          message: Message.FETCHED,
+          isCached: true,
+          data: cached.data,
+        });
+      }
+
+      const result = await galleryService.getAllGallery();
+      if (result.status !== HTTP_STATUS.OK || !result.data) {
+        return res.status(result.status).json({ message: Message.INTERNAL_SERVER_ERROR });
+      }
+      await setCache("gallery:all", result.data, 300);
+      return res.status(HTTP_STATUS.OK).json({
+        message: Message.FETCHED,
+        isCached: false,
+        data: result.data,
       });
     } catch (err: any) {
-      return res.status(500).json({ message: err.message });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -64,13 +85,27 @@ export class GalleryController {
   static async getGalleryById(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const item = await galleryService.getGalleryById(Number(id));
-      return res.status(200).json({
-        message: "Gallery item fetched successfully",
-        data: item,
+      const cacheKey = `gallery:${id}`;
+      const cached = await getCache<any>(cacheKey);
+      if (cached.cached && cached.data) {
+        return res.status(HTTP_STATUS.OK).json({
+          message: Message.FETCHED,
+          isCached: true,
+          data: cached.data,
+        });
+      }
+      const result = await galleryService.getGalleryById(Number(id));
+      if (result.status === HTTP_STATUS.NOT_FOUND || !result.data) {
+        return res.status(result.status).json({ message: Message.NOT_FOUND });
+      }
+      await setCache(cacheKey, result.data, 300);
+      return res.status(HTTP_STATUS.OK).json({
+        message: Message.FETCHED,
+        isCached: false,
+        data: result.data,
       });
     } catch (err: any) {
-      return res.status(500).json({ message: err.message });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -82,7 +117,7 @@ export class GalleryController {
       const errors = await validate(dto, { skipMissingProperties: true });
 
       if (errors.length > 0) {
-        return res.status(400).json(errors);
+        return res.status(HTTP_STATUS.BAD_REQUEST).json(errors);
       }
 
       const files = (req as any).files as
@@ -97,13 +132,18 @@ export class GalleryController {
         dto.image = uploadResult.secure_url;
       }
 
-      const updated = await galleryService.updateGallery(Number(id), dto);
-      return res.status(200).json({
-        message: "Gallery item updated successfully",
-        data: updated,
+      const result = await galleryService.updateGallery(Number(id), dto);
+      if (result.status === HTTP_STATUS.NOT_FOUND) {
+        return res.status(result.status).json({ message: Message.NOT_FOUND });
+      }
+      await delCache("gallery:all");
+      await delCache(`gallery:${id}`);
+      return res.status(HTTP_STATUS.OK).json({
+        message: Message.UPDATED,
+        data: result.data,
       });
     } catch (err: any) {
-      return res.status(500).json({ message: err.message });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -111,12 +151,17 @@ export class GalleryController {
   static async deleteGallery(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      await galleryService.deleteGallery(Number(id));
-      return res.status(200).json({
-        message: "Gallery item deleted successfully",
+      const result = await galleryService.deleteGallery(Number(id));
+      if (result.status === HTTP_STATUS.NOT_FOUND) {
+        return res.status(result.status).json({ message: Message.NOT_FOUND });
+      }
+      await delCache("gallery:all");
+      await delCache(`gallery:${id}`);
+      return res.status(result.status).json({
+        message: Message.DELETED,
       });
     } catch (err: any) {
-      return res.status(500).json({ message: err.message });
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: Message.INTERNAL_SERVER_ERROR });
     }
   }
 

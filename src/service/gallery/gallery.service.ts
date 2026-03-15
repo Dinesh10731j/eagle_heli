@@ -1,6 +1,7 @@
 import { CreateGalleryDTO } from "../../dto/gallery/gallery.dto";
 import { Gallery } from "../../entities/gallery.entity";
 import { GalleryRepository } from "../../repository/gallery/gallery.repository";
+import { HTTP_STATUS } from "../../constant/statusCode.interface";
 
 export class GalleryService {
   private galleryRepo: GalleryRepository;
@@ -9,39 +10,31 @@ export class GalleryService {
     this.galleryRepo = galleryRepo;
   }
 
-  async createGallery(dto: CreateGalleryDTO): Promise<Gallery> {
+  async createGallery(dto: CreateGalleryDTO) {
     const created = await this.galleryRepo.createGallery(dto);
-    if (!created) {
-      throw new Error("Failed to create gallery item");
-    }
-    return created;
+    return { status: HTTP_STATUS.CREATED, data: created };
   }
 
-  async getAllGallery(): Promise<Gallery[]> {
-    return await this.galleryRepo.getAllGallery();
+  async getAllGallery() {
+    const data = await this.galleryRepo.getAllGallery();
+    return { status: HTTP_STATUS.OK, data };
   }
 
-  async getGalleryById(id: number): Promise<Gallery | null> {
-    const gallery = await this.galleryRepo.getGalleryById(id);
-    if (!gallery) {
-      throw new Error("Gallery item not found");
-    }
-    return gallery;
+  async getGalleryById(id: number) {
+    const data = await this.galleryRepo.getGalleryById(id);
+    if (!data) return { status: HTTP_STATUS.NOT_FOUND };
+    return { status: HTTP_STATUS.OK, data };
   }
 
-  async updateGallery(id: number, dto: Partial<CreateGalleryDTO>): Promise<Gallery> {
+  async updateGallery(id: number, dto: Partial<CreateGalleryDTO>) {
     const updated = await this.galleryRepo.updateGallery(id, dto);
-    if (!updated) {
-      throw new Error("Failed to update gallery item");
-    }
-    return updated;
+    if (!updated) return { status: HTTP_STATUS.NOT_FOUND };
+    return { status: HTTP_STATUS.OK, data: updated };
   }
 
-  async deleteGallery(id: number): Promise<void> {
-    const existing = await this.galleryRepo.getGalleryById(id);
-    if (!existing) {
-      throw new Error("Gallery item not found");
-    }
-    await this.galleryRepo.deleteGallery(id);
+  async deleteGallery(id: number) {
+    const deleted = await this.galleryRepo.deleteGallery(id);
+    if (!deleted) return { status: HTTP_STATUS.NOT_FOUND };
+    return { status: HTTP_STATUS.OK };
   }
 }
