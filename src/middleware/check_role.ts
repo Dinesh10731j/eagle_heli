@@ -7,6 +7,15 @@ const forbidden = (res: Response) =>
   res.status(HTTP_STATUS.FORBIDDEN).json({ message: Message.FORBIDDEN_ROLE });
 
 export class CheckRole {
+  static isVerifiedUser(req: Request, res: Response, next: NextFunction) {
+    const user = (req as Request & { user?: UserPayload }).user;
+    if (!user) return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: Message.UNAUTHORIZED });
+    if (!user.isVerified) {
+      return res.status(HTTP_STATUS.FORBIDDEN).json({ message: Message.FORBIDDEN });
+    }
+    return next();
+  }
+
   static isAdmin(req: Request, res: Response, next: NextFunction) {
     const user = (req as Request & { user?: UserPayload }).user;
     if (!user) return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: Message.UNAUTHORIZED });
