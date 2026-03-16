@@ -17,6 +17,9 @@ export class User {
   @Column({ default: "user" })
   role!: string;
 
+  @Column({ default: true })
+  isVerified!: boolean;
+
   @Column({ type: "varchar", nullable: true })
   resetPasswordToken?: string | null;
 

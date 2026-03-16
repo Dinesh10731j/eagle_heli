@@ -32,7 +32,7 @@ if (!this.refreshTokenSecret) throw new Error("REFRESH_TOKEN_SECRET not defined!
   // Generate JWTs
   private generateAccessToken(user: User) {
     return jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, isVerified: user.isVerified, name: user.name },
       this.accessTokenSecret,
       { expiresIn: "15m" }
     );
@@ -40,7 +40,7 @@ if (!this.refreshTokenSecret) throw new Error("REFRESH_TOKEN_SECRET not defined!
 
   private generateRefreshToken(user: User) {
     return jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, isVerified: user.isVerified, name: user.name },
       this.refreshTokenSecret,
       { expiresIn: "7d" }
     );
