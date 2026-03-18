@@ -38,8 +38,7 @@ export const Message = {
   // Booking
   FLIGHT_BOOKing_SUCCESS: "Flight Booked Successfully",
   BOOKING_NOT_FOUND: "Booking not found",
-  BOOKING_CANCELLED : "Booking has been cancelled"
-  ,
+  BOOKING_CANCELLED : "Booking has been cancelled",
   NEWSLETTER_SUBSCRIBED: "Subscribed to newsletter",
   NEWSLETTER_SENT: "Newsletter sent"
 

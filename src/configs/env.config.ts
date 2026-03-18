@@ -36,6 +36,7 @@ export const envConfig = {
   CLOUDINARY_API_SECRET: cleanEnv(process.env.CLOUDINARY_API_SECRET),
   FRONTEND_URL: cleanEnv(process.env.FRONTEND_URL),
   RECAPTCHA_SECRET_KEY: cleanEnv(process.env.RECAPTCHA_SECRET_KEY),
+  CORS_ORIGINS: cleanEnv(process.env.CORS_ORIGINS),
 };
 
 
